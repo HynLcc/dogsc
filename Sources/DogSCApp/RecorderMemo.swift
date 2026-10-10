@@ -117,7 +117,7 @@ final class RecorderMemoController: NSObject, ObservableObject, NSWindowDelegate
         }
         panel.contentViewController = NSHostingController(rootView:
             RecorderMemoView(store: store, onClose: { [weak self] in self?.hide() })
-                .preferredColorScheme(.light).appControlFocusAppearance())
+                .preferredColorScheme(.light).appLanguage().appControlFocusAppearance())
         panel.delegate = self
         self.panel = panel
         screenObserver = NotificationCenter.default.addObserver(

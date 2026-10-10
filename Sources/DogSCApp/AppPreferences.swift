@@ -7,7 +7,7 @@ import SwiftUI
 /// to SwiftUI as localization keys. Keeping this at the app boundary also
 /// avoids coupling RecorderCore's persisted raw values to the UI language.
 func appLocalized(_ key: String) -> String {
-    Bundle.main.localizedString(forKey: key, value: key, table: nil)
+    AppLocalization.shared.localizedString(key)
 }
 
 /// Core errors retain their stable domain values. Translate their presentation
@@ -74,6 +74,24 @@ private func appTimelineTrackName(_ track: ProjectTimelineTrack) -> String {
     case .cameraMotion: appLocalized("摄像运动")
     case .mosaic: appLocalized("打码")
     case .sticker: appLocalized("贴图")
+    }
+}
+
+/// Persisted independently of macOS's language preference.
+/// Native language names remain recognizable in either interface language.
+enum AppLanguagePreference: String, CaseIterable, Identifiable {
+    case system
+    case simplifiedChinese = "zh-Hans"
+    case english = "en"
+
+    var id: Self { self }
+
+    var label: String {
+        switch self {
+        case .system: appLocalized("跟随系统")
+        case .simplifiedChinese: "简体中文"
+        case .english: "English"
+        }
     }
 }
 
@@ -238,6 +256,7 @@ extension Notification.Name {
 }
 
 enum AppPreferences {
+    static let languagePreferenceKey = "app.language"
     static let appearancePreferenceKey = "app.appearance"
     static let exportCompletionSoundEnabledKey =
         "cn.laogou.dogsc.export-completion-sound-enabled"

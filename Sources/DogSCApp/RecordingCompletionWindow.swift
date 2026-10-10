@@ -297,7 +297,7 @@ private struct RecordingCompletionCard: View {
         .fixedSize(horizontal: false, vertical: true)
         .shadow(color: .black.opacity(0.14), radius: 16, x: 0, y: 5)
         .padding(20)
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
         .accessibilityIdentifier("recording.completion.card")
         .task(id: model.recordingURL) { await loadPreview() }
         .onChange(of: model.errorMessage) { _, _ in

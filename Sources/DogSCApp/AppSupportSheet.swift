@@ -47,7 +47,7 @@ struct AppSupportSheet: View {
         .padding(24)
         .frame(width: 448)
         .background(EditorTheme.panelSurface)
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
         .onExitCommand { dismiss() }
     }
 }

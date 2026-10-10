@@ -86,7 +86,7 @@ struct RequiredRecordingPermissionView: View {
         .foregroundStyle(PermissionOnboardingStyle.ink)
         .background(Color(nsColor: PermissionOnboardingStyle.background))
         .preferredColorScheme(.light)
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
         .firstUseTour(.permissions, enabled: presentation.isTourReady && !presentation.isIntroAnimating)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(RecorderAccessibilityID.permissionGate)
@@ -234,7 +234,7 @@ struct PermissionDragAssistantView: View {
                 }
         }
         .preferredColorScheme(.light)
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
     }
 }
 

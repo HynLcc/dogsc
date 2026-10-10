@@ -245,7 +245,7 @@ private struct DisplaySelectionOverlay: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea()
         .preferredColorScheme(.light)
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
         .allowsHitTesting(!presentation.retiring)
         .task(id: display.id) { thumbnail = await RecorderSourceThumbnail.image(displayID: display.id) }
     }

@@ -63,7 +63,7 @@ struct EditorTransientNotice: View {
         .background(EditorTheme.cardElevated, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
         .overlay { RoundedRectangle(cornerRadius: 15).strokeBorder(EditorTheme.chrome(0.085), lineWidth: 1) }
         .shadow(color: EditorTheme.softShadow, radius: 12, y: 5)
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
         .accessibilityElement(children: .contain)
         .accessibilityLabel(text.title + "：" + text.detail)
         .task {

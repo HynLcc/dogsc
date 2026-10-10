@@ -19,6 +19,8 @@ final class DogSCApplicationDelegate: NSObject,
     private var settingsShortcutMonitor: Any?
     private var recordingMarkerHotKey: RecordingMarkerHotKey?
     private var keyWindowObservation: NSObjectProtocol?
+    private var isRefreshingMainMenu = false
+    private var isMenuRefreshScheduled = false
     private var isWaitingForRecordingCompletionDecision = false
 
     /// Pure launch-order policy kept separate from AppKit callbacks so a cold
@@ -429,8 +431,10 @@ final class DogSCApplicationDelegate: NSObject,
 
         if let about = applicationMenu.items.first(where: {
             $0.action == #selector(NSApplication.orderFrontStandardAboutPanel(_:))
+                || $0.action == #selector(openAboutFromApplicationMenu(_:))
                 || $0.title.hasPrefix("关于")
         }) {
+            about.title = "\(appLocalized("关于")) \(AppIdentity.displayName)"
             about.target = self
             about.action = #selector(openAboutFromApplicationMenu(_:))
             about.isEnabled = true
@@ -439,6 +443,7 @@ final class DogSCApplicationDelegate: NSObject,
         if let settings = applicationMenu.items.first(where: {
             $0.keyEquivalent == "," || $0.title.hasPrefix("设置")
         }) {
+            settings.title = appLocalized("设置…")
             settings.target = self
             settings.action = #selector(openSettingsFromStatusItem(_:))
             settings.keyEquivalent = ","
@@ -448,8 +453,10 @@ final class DogSCApplicationDelegate: NSObject,
 
         if let quit = applicationMenu.items.first(where: {
             $0.action == #selector(NSApplication.terminate(_:))
+                || $0.action == #selector(quitFromStatusItem(_:))
                 || $0.title.hasPrefix("退出")
         }) {
+            quit.title = String(format: appLocalized("退出%@"), AppIdentity.displayName)
             quit.target = self
             quit.action = #selector(quitFromStatusItem(_:))
             quit.keyEquivalent = "q"
@@ -475,10 +482,32 @@ final class DogSCApplicationDelegate: NSObject,
         }
     }
 
+    /// DispatchQueue.main also executes during menu tracking. Wait for the
+    /// default run-loop mode before changing the menu structure or its targets.
+    func scheduleMainMenuRefresh() {
+        guard !isMenuRefreshScheduled else { return }
+        isMenuRefreshScheduled = true
+        RunLoop.main.perform(inModes: [.default]) { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                self.isMenuRefreshScheduled = false
+                self.refreshMainMenuBindings()
+            }
+        }
+    }
+
     func refreshMainMenuBindings() {
+        if RunLoop.current.currentMode == .eventTracking {
+            scheduleMainMenuRefresh()
+            return
+        }
+        guard !isRefreshingMainMenu else { return }
+        isRefreshingMainMenu = true
+        defer { isRefreshingMainMenu = false }
         installApplicationMenuActions()
         EditorMenuBridge.shared.installMainMenuItems()
         installProjectMediaMenu()
+        EditorMenuBridge.shared.refreshLocalizedTitles()
         setMainMenuEditorMode(WindowCoordinator.activeEditorModel != nil)
     }
 
@@ -527,6 +556,7 @@ final class DogSCApplicationDelegate: NSObject,
             action: #selector(exportProjectSourceMedia(_:)),
             keyEquivalent: ""
         )
+        exportSources.representedObject = "导出项目源文件…"
         exportSources.target = self
         exportSources.identifier = exportProjectMediaItemIdentifier
         fileMenu.addItem(exportSources)
@@ -536,6 +566,7 @@ final class DogSCApplicationDelegate: NSObject,
             action: #selector(importCameraReplacement(_:)),
             keyEquivalent: ""
         )
+        importAligned.representedObject = "替换当前项目摄像头…"
         importAligned.target = self
         importAligned.identifier = replaceCameraMediaItemIdentifier
         fileMenu.addItem(importAligned)

@@ -203,7 +203,7 @@ private final class EditorMarkerCardPresenter: ObservableObject {
         let width = min(304, visible.width)
         let anchorRect = owner.convertToScreen(anchor.convert(anchor.bounds, to: nil))
         host.rootView = AnyView(content(visible.height).frame(width: width)
-            .preferredColorScheme(colorScheme).appControlFocusAppearance())
+            .preferredColorScheme(colorScheme).appLanguage().appControlFocusAppearance())
         panel.appearance = NSAppearance(named: colorScheme == .dark ? .darkAqua : .aqua)
         let height = min(max(host.view.fittingSize.height, 100), visible.height)
         let x = min(max(anchorRect.minX, visible.minX), visible.maxX - width)

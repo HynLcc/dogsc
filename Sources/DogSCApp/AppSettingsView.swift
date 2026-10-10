@@ -62,6 +62,9 @@ struct AppSettingsView: View {
     private var previewResolutionMode = EditorPreviewResolutionMode.defaultValue
     @AppStorage(AppPreferences.recordingCameraPreviewShapeKey)
     private var recordingCameraPreviewShape = RecordingCameraPreviewShape.circle
+    @AppStorage(AppPreferences.languagePreferenceKey)
+    private var languagePreference = AppLanguagePreference.system
+
     @AppStorage(AppPreferences.appearancePreferenceKey)
     private var appearancePreference = AppAppearancePreference.system
     @AppStorage(CaptureDevicePreferenceKey.systemAudioEnabled)
@@ -127,7 +130,7 @@ struct AppSettingsView: View {
         .background(EditorTheme.panelSurface)
         .font(.appUI(.body))
         .tint(editorAccent)
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
         .onChange(of: appearancePreference) { _, _ in
             AppPreferences.applyAppearancePreferenceToOpenWindows()
         }
@@ -261,6 +264,7 @@ struct AppSettingsView: View {
     @ViewBuilder
     private var generalSettingsView: some View {
         appearanceSettingsCard
+        languageSettingsCard
 
         // 提示与声音
         settingsCard(title: "提示与声音", icon: "bell.badge.fill") {
@@ -336,6 +340,17 @@ struct AppSettingsView: View {
             }
         }
 
+    }
+
+    private var languageSettingsCard: some View {
+        settingsCard(title: "语言", icon: "globe") {
+            Picker("应用语言", selection: $languagePreference) {
+                ForEach(AppLanguagePreference.allCases) { preference in
+                    Text(preference.label).tag(preference)
+                }
+            }
+            .pickerStyle(.menu)
+        }
     }
 
     private var appearanceSettingsCard: some View {

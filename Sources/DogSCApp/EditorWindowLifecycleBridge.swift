@@ -119,7 +119,7 @@ final class WindowObservationView: NSView {
         guard let window else { return }
         let trimmed = projectTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         window.title = trimmed.isEmpty
-            ? "\(AppIdentity.displayName) 编辑器"
+            ? "\(AppIdentity.displayName) \(appLocalized("编辑器"))"
             : "\(trimmed) — \(AppIdentity.displayName)"
     }
 

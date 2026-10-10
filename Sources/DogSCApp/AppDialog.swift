@@ -131,7 +131,7 @@ struct AppDialogCard: View {
         .accessibilityElement(children: .contain)
         .accessibilityLabel(appLocalized(dialog.title))
         .accessibilityIdentifier("app.dialog.card")
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
         .onAppear { inputFocused = dialog.input != nil }
         .fixedSize(horizontal: false, vertical: true)
     }

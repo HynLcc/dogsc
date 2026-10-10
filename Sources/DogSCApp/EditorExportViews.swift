@@ -203,7 +203,7 @@ struct ExportSheet: View {
         }
         .frame(width: 840)
         .background(EditorTheme.panelSurface)
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
         .animation(SpringMotion.fluid, value: selectedOutputKind)
         .interactiveDismissDisabled(exporter.isExporting)
         .onExitCommand {

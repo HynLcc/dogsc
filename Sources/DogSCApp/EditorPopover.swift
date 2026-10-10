@@ -49,7 +49,7 @@ private struct EditorPopoverFocusScope<Content: View>: View {
 
     var body: some View {
         content
-            .appControlFocusAppearance()
+            .appLanguage().appControlFocusAppearance()
             .background(alignment: .topLeading) {
                 // Establish keyboard entry without making the content itself
                 // a control: nested text fields must keep their own responder.

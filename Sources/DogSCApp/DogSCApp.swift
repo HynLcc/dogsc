@@ -129,7 +129,7 @@ struct RecorderMainWindowRoot: View {
             }
         }
         .font(.appUI(.body))
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
         .modifier(RecorderSystemWindowDragModifier())
         .preferredColorScheme(.light)
     }
@@ -188,7 +188,7 @@ private struct EditorSessionHost: View {
     var body: some View {
         EditorView(context: contextProvider.context)
             .id(contextProvider.context.id)
-            .appControlFocusAppearance()
+            .appLanguage().appControlFocusAppearance()
         // NSWindow owns appearance so native and SwiftUI chrome change in
         // the same transition, before either tree redraws in the new theme.
     }

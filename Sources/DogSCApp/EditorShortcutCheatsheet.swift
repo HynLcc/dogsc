@@ -134,7 +134,7 @@ struct EditorShortcutCheatsheet: View {
         // explanation column retains the original reading width.
         .frame(width: 344 + keyColumnWidth, height: 480)
         .background(EditorTheme.panelSurface)
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
         .onExitCommand { dismiss() }
     }
 }

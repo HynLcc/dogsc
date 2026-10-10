@@ -78,7 +78,7 @@ struct EditorScenePresetSheet: View {
         .padding(24)
         .frame(width: 480)
         .background(EditorTheme.panelSurface)
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
         .interactiveDismissDisabled(isSaving)
         .onAppear { nameFocused = true }
     }
@@ -159,7 +159,7 @@ struct EditorScenePresetPreview: View {
         .padding(24)
         .frame(width: 500)
         .background(EditorTheme.panelSurface)
-        .appControlFocusAppearance()
+        .appLanguage().appControlFocusAppearance()
         .task {
             if let image = await mediaSession.thumbnail(atOutputTime: outputTime) {
                 thumbnail = NSImage(cgImage: image, size: .zero)

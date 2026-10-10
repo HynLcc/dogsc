@@ -359,7 +359,7 @@ final class FirstUseTourController {
                                           onSkip: { [weak self] in self?.finish() },
                                           primaryTitle: permissionPrimaryTitle,
                                           showsPrevious: permissionFlow?.isReview ?? true)
-            cardPanel.contentView = NSHostingView(rootView: content.frame(width: cardWidth).preferredColorScheme(.light).appControlFocusAppearance())
+            cardPanel.contentView = NSHostingView(rootView: content.frame(width: cardWidth).preferredColorScheme(.light).appLanguage().appControlFocusAppearance())
             lastCardIndex = index
         }
         let height = max(160, cardPanel.contentView?.fittingSize.height ?? 190)

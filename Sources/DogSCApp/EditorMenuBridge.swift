@@ -73,11 +73,37 @@ final class EditorMenuBridge: NSObject, NSMenuItemValidation {
             ))
             let root = NSMenuItem(title: appLocalized("文件"), action: nil, keyEquivalent: "")
             root.identifier = fileMenuIdentifier
+            root.representedObject = "文件"
             root.submenu = fileMenu
             mainMenu.insertItem(root, at: 1)
         }
         installEditItems(in: mainMenu)
         removeUnavailableHelpMenu(from: mainMenu)
+    }
+
+    /// Update titles in place so targets, undo managers and menu visibility survive.
+    func refreshLocalizedTitles() {
+        guard let menu = NSApplication.shared.mainMenu else { return }
+        // Keep the Settings scene independent of the observable language.
+        // Rebuilding its Commands would replace the entire native menu tree.
+        let sceneKeys = ["设置…", "首次使用引导…", "快捷键速查"]
+        let english = Bundle.main.path(forResource: "en", ofType: "lproj")
+            .flatMap(Bundle.init(path:))
+        func refresh(_ menu: NSMenu) {
+            for item in menu.items {
+                let sceneKey = sceneKeys.first { key in
+                    item.title == key || item.title == english?.localizedString(
+                        forKey: key, value: key, table: nil
+                    )
+                }
+                if let key = sceneKey ?? (item.representedObject as? String) {
+                    item.title = appLocalized(key)
+                    item.submenu?.title = item.title
+                }
+                if let submenu = item.submenu { refresh(submenu) }
+            }
+        }
+        refresh(menu)
     }
 
     /// The floating recorder has no editable text, resizable document window,
@@ -176,6 +202,7 @@ final class EditorMenuBridge: NSObject, NSMenuItemValidation {
             mainMenu.insertItem(root, at: min(2, mainMenu.items.count))
         }
         root.identifier = editMenuIdentifier
+        root.representedObject = "编辑"
 
         let undoItem = editMenu.items.first { item in
             item.action == undoSelector || item.action == #selector(undoFromMenu(_:))
@@ -224,6 +251,7 @@ final class EditorMenuBridge: NSObject, NSMenuItemValidation {
         keyEquivalent: String,
         modifiers: NSEvent.ModifierFlags
     ) {
+        item.representedObject = title
         item.title = appLocalized(title)
         item.target = self
         item.action = action
@@ -238,6 +266,7 @@ final class EditorMenuBridge: NSObject, NSMenuItemValidation {
         modifiers: NSEvent.ModifierFlags = [.command]
     ) -> NSMenuItem {
         let item = NSMenuItem(title: appLocalized(title), action: action, keyEquivalent: keyEquivalent)
+        item.representedObject = title
         item.keyEquivalentModifierMask = modifiers
         item.target = self
         return item
